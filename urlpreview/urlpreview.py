@@ -73,15 +73,13 @@ class UrlpreviewBot(Plugin):
             image = None
             if cont.get("og:image", None):
                 if (MIN_IMAGE_WIDTH <= 0) or (cont.get("og:image:width", None) and cont.get("og:image:width", 0) > MIN_IMAGE_WIDTH):
-                    mauApi = mautrix.api.HTTPAPI("https://"+HOMESERVER)
-                    image_url = str(mauApi.get_download_url(
-                        cont.get('og:image', None)))
-                    image = f'<a href="{image_url}"><img src="{cont.get("og:image", None)}" width="{MAX_IMAGE_EMBED}" alt="Banner image" /></a>'
+                    image = f'<img src="{cont.get("og:image", None)}" width="{MAX_IMAGE_EMBED}" alt="Image preview" />'
 
-            msgs += "<blockquote><table><tr>"
+            # support https://github.com/matrix-org/matrix-react-sdk/blob/2dc94ac277bfaed6e7a8116ff08bba22ee8fb642/src/HtmlUtils.js#L179-L291
+            msgs += "<blockquote>"
             msgs += "".join(filter(None,
-                            [f"<td>{image}</td>", f"<td>{title}", f"{description}</td>"]))
-            msgs += "</tr></table></blockquote>"
+                                   [f"<div style=\"background-color: red;\">{image}</div>", f"<div>{title}", f"{description}</div>"]))
+            msgs += "</blockquote>"
             count += 1  # Implement MAX_LINKS
 
         if count <= 0:
